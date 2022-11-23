@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Layout from "../components/Layout";
 import Router from "next/router";
+import { useSession } from "next-auth/react"
 
 const Draft = () => {
   const [title, setTitle] = useState('')
@@ -52,3 +53,5 @@ const Draft = () => {
 }
 
 export default Draft;
+
+Draft.auth = true;
