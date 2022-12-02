@@ -5,7 +5,7 @@ import prisma from "../lib/prisma";
 import Link from "next/link";
 
 import Layout from "../components/Layout";
-import Post from '../components/Post'
+import Bio from '../components/Bio'
 
 export const getServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req })
@@ -20,7 +20,7 @@ export const getServerSideProps = async ({ req, res }) => {
     }
   }
 
-  const drafts = await prisma.post.findMany({
+  const drafts = await prisma.bio.findMany({
     where: {
       author: {
         email: session.user.email
@@ -58,9 +58,9 @@ const Drafts = (props) => {
       <div className="page">
         <h1>My Drafts</h1>
         <main>
-          {props.drafts.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
+          {props.drafts.map((bio) => (
+            <div key={bio.id} className="post">
+              <Bio bio={bio} />
             </div>
           ))}
         </main>

@@ -21,7 +21,7 @@ const Header = () => {
     right = (<><p>{session.user.name} ({session.user.email})</p>
       <Link href="/create">
         <button>
-          New post
+          Add a new User Bio
         </button>
       </Link>
       <button onClick={() => signOut()}> <a>Log out</a></button>

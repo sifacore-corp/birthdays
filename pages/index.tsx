@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import prisma from '../lib/prisma';
 
-import Post from "../components/Post"
+import Bio from "../components/Bio"
 import Layout from "../components/Layout"
 
 export default function Home({ feed }) {
@@ -15,9 +15,9 @@ export default function Home({ feed }) {
       </Head>
 
       <Layout>
-        {feed.map((post) => (
-          <div key={post.id} className="post">
-            <Post post={post} />
+        {feed.map((bio) => (
+          <div key={bio.id} className="post">
+            <Bio bio={bio} />
           </div>
         ))}
       </Layout>
@@ -28,11 +28,14 @@ export default function Home({ feed }) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const feed = await prisma.post.findMany({
+  const feed = await prisma.bio.findMany({
     where: { published: true },
     include: {
       author: {
-        select: { name: true },
+        select: {
+          name: true,
+          email: true
+        },
       },
     },
   });

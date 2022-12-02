@@ -7,50 +7,53 @@ import { useSession } from 'next-auth/react';
 
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const post = await prisma.post.findUnique({
+  let idInt = params && parseInt(params.id)
+
+  const bio = await prisma.bio.findUnique({
     where: {
-      id: String(params?.id),
+      id: idInt,
     },
-    include: {
-      author: {
-        select: { name: true, email: true },
-      },
+    select: {
+      author: true
     },
   });
   return {
-    props: post,
+    props: bio,
   };
 };
 
-async function publishPost(id: string): Promise<void> {
+
+
+async function publishBio(id) {
   await fetch(`/api/publish/${id}`, {
     method: 'PUT',
   });
   await Router.push('/');
 }
 
-async function unPublishPost(id: string): Promise<void> {
+async function unPublishBio(id) {
   await fetch(`/api/unpublish/${id}`, {
     method: 'PUT',
   });
   await Router.push('/');
 }
 
-async function deletePost(id) {
-  await fetch(`/api/post/${id}`, {
+async function deleteBio(id) {
+  await fetch(`/api/bio/${id}`, {
     method: 'DELETE'
   })
   Router.push('/')
 }
 
 const Post = (props) => {
+  console.log(props)
   const { data: session, status } = useSession();
   if (status === 'loading') {
     return <div>Authenticating ...</div>;
   }
 
   const userHasValidSession = Boolean(session);
-  const postBelongsToUser = session?.user?.email === props.author?.email;
+  const bioBelongsToUser = session?.user?.email === props.author?.email;
 
   let title = props.title
   if (!props.published) {
@@ -61,15 +64,15 @@ const Post = (props) => {
   let unpublishedButton;
   let deleteButton;
 
-  if (userHasValidSession && postBelongsToUser) {
-    publishButton = !props.published && <button onClick={() => publishPost(props.id)}>Publish</button>;
-    unpublishedButton = props.published && <button onClick={() => unPublishPost(props.id)}>Unpublish</button>
-    deleteButton = <button onClick={() => deletePost(props.id)}>Delete</button>
+  if (userHasValidSession && bioBelongsToUser) {
+    publishButton = !props.published && <button onClick={() => publishBio(props.id)}>Publish</button>;
+    unpublishedButton = props.published && <button onClick={() => unPublishBio(props.id)}>Unpublish</button>
+    deleteButton = <button onClick={() => deleteBio(props.id)}>Delete</button>
   }
 
   return (
     <div>
-      <h2>{title}</h2>
+      <h2>{props.first_name}</h2>
       <p>By {props?.author?.name || "Unknown author"}</p>
       <ReactMarkdown children={props.content} />
       {publishButton}
