@@ -17,21 +17,23 @@ const Header = () => {
   }
 
   if (session) {
-    left = <Link href="/" className="bold" data-active={isActive('/')}>{left}</Link>;
-    right = (<><p>{session.user.name} ({session.user.email})</p>
-      <Link href="/create">
-        <button>
-          Add a new User Bio
-        </button>
-      </Link>
-      <button onClick={() => signOut()}> <a>Log out</a></button>
-    </>)
+    left = <Link href="/" className="bold" data-active={isActive('/')}>Home</Link>;
+    right = (
+      <>
+        <p>{session.user.name} ({session.user.email})</p>
+        <Link href="/create">
+          <button>
+            Add a new User Bio
+          </button>
+        </Link>
+        <button onClick={() => signOut()}> <a>Log out</a></button>
+      </>)
   } else {
     right = (<Link href="/api/auth/signin" data-active={isActive('/signup')}>Log in</Link>)
   }
 
   return (
-    <nav>
+    <nav className='inner'>
       <div className="left">{left}</div>
       <div className="right">{right}</div>
     </nav>
