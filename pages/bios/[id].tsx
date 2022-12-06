@@ -1,9 +1,11 @@
 import prisma from '../../lib/prisma';
 import ReactMarkdown from "react-markdown";
 import { GetServerSideProps } from 'next';
-import Router from 'next/router';
-import Layout from '../../components/Layout';
 import { useSession } from 'next-auth/react';
+import { publishBio, unPublishBio, deleteBio } from '../../utils/bioUtils'
+
+import BioEdit from '../../components/BioEdit'
+import Layout from "../../components/Layout";
 
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -24,41 +26,18 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   };
 };
 
-
-
-async function publishBio(id) {
-  await fetch(`/api/publish/${id}`, {
-    method: 'PUT',
-  });
-  await Router.push('/');
-}
-
-async function unPublishBio(id) {
-  await fetch(`/api/unpublish/${id}`, {
-    method: 'PUT',
-  });
-  await Router.push('/');
-}
-
-async function deleteBio(id) {
-  await fetch(`/api/bio/${id}`, {
-    method: 'DELETE'
-  })
-  Router.push('/')
-}
-
 const Post = (props) => {
-  console.log(props)
+  let { title, author, published, id, first_name, last_name, text, birthday } = props
   const { data: session, status } = useSession();
+
   if (status === 'loading') {
     return <div>Authenticating ...</div>;
   }
 
   const userHasValidSession = Boolean(session);
-  const bioBelongsToUser = session?.user?.email === props.author?.email;
+  const bioBelongsToUser = session?.user?.email === author?.email;
 
-  let title = props.title
-  if (!props.published) {
+  if (!published) {
     title = `${title} (Draft)`
   }
 
@@ -67,20 +46,30 @@ const Post = (props) => {
   let deleteButton;
 
   if (userHasValidSession && bioBelongsToUser) {
-    publishButton = !props.published && <button onClick={() => publishBio(props.id)}>Publish</button>;
-    unpublishedButton = props.published && <button onClick={() => unPublishBio(props.id)}>Unpublish</button>
-    deleteButton = <button onClick={() => deleteBio(props.id)}>Delete</button>
+    publishButton = !props.published && <button onClick={() => publishBio(id)}>Publish</button>;
+    unpublishedButton = props.published && <button onClick={() => unPublishBio(id)}>Unpublish</button>
+    deleteButton = <button onClick={() => deleteBio(id)}>Delete</button>
   }
 
   return (
-    <div>
-      <h2>{props.first_name}</h2>
-      <p>By {props?.author?.name || "Unknown author"}</p>
-      <ReactMarkdown children={props.content} />
+    <Layout>
+      <h2>{first_name} {userHasValidSession && last_name}</h2>
+      <p>By {author?.name || author?.email || "Unknown author"}</p>
+      <p>Birthday: {new Date(birthday).toDateString()} </p>
+      <ReactMarkdown children={text} />
       {publishButton}
       {unpublishedButton}
       {deleteButton}
-    </div>
+      <h2>Edit</h2>
+      <BioEdit
+        defaultTitle={title}
+        defaultId={id}
+        first_name={first_name}
+        last_name={last_name}
+        defaultText={text}
+        defaultBirthday={birthday}
+      />
+    </Layout>
   )
 }
 

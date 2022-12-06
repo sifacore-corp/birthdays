@@ -16,7 +16,7 @@ model Bio {
   last_name  String?
   birthday   DateTime  @updatedAt @map(name: "birthday")
   title      String
-  bio        String?
+  text       String?
   published  Boolean @default(false)
   author     User?   @relation(fields: [authorId], references: [id])
   authorId   String?
