@@ -1,4 +1,4 @@
-name: hourly-cron-job
+name: daily-cron-job
 on:
   schedule:
     - cron: '*/5 * * * *'
