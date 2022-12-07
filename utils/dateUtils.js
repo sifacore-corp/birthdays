@@ -27,6 +27,4 @@ export function updateBirthday(inputDate) {
     return (new Date(inputDate).toDateString())
   }
 
-
 }
-
