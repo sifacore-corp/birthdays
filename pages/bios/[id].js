@@ -8,7 +8,7 @@ import BioEdit from '../../components/BioEdit'
 import Layout from "../../components/Layout";
 
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps = async ({ params }) => {
   let idInt = params && parseInt(params.id)
 
   const bio = await prisma.bio.findUnique({

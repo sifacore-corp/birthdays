@@ -27,7 +27,7 @@ export default function Home({ feed }) {
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps = async () => {
   const feed = await prisma.bio.findMany({
     where: { published: true },
     include: {
