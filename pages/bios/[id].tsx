@@ -56,7 +56,7 @@ const Post = (props) => {
       <h2>{first_name} {userHasValidSession && last_name}</h2>
       <p>By {author?.name || author?.email || "Unknown author"}</p>
       <p>Birthday: {new Date(birthday).toDateString()} </p>
-      <ReactMarkdown children={text} />
+      <ReactMarkdown>{text}</ReactMarkdown>
       {publishButton}
       {unpublishedButton}
       {deleteButton}

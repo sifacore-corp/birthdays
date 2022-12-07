@@ -11,7 +11,7 @@ const Bio = ({ bio }) => {
       <h2>{first_name}</h2>
       <small>By {authorName}</small>
       <p>Birthday: {updateBirthday(birthday)} </p>
-      {birthdayIsToday(birthday) && <h3>Today is {first_name}'s birthday!</h3>}
+      {birthdayIsToday(birthday) && <h3>{`Today is ${first_name}'s birthday!`}</h3>}
       <ReactMarkdown children={text} />
     </Link>
   )
