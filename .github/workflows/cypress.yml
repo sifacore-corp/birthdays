@@ -14,5 +14,8 @@ jobs:
       # and run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v4
+        with:
+          browser: chrome
+          headed: true
         env:
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
