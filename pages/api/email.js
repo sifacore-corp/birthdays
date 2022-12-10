@@ -1,7 +1,7 @@
-import mail from '@sendgrid/mail';
+import sgMail from '@sendgrid/mail';
 
 
-mail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendEmails = async (req, res) => {
   try {
@@ -9,27 +9,41 @@ const sendEmails = async (req, res) => {
     let { message, emails } = body
     console.log(emails)
 
-    // Send emails to the array list.
-    await emails.map((email) => {
-
-      (async function () {
-        await mail.send({
-          to: email,
-          from: 'iris@saharaflair.com',
-          subject: `There's a birthday today!`,
-          text: message
-        })
-          .then(() => {
-            console.log('Email sent')
-            // res.status(200).json({ status: 'Ok' })
-          })
-          .catch((error) => {
-            console.error(error)
-          })
-      })()
-
+    await sgMail.send({
+      to: `irisb_d@yahoo.com`,
+      from: 'iris.i@saharaflair.com',
+      subject: `There's a birthday today!`,
+      text: message
     })
-    res.status(200).json({ status: 'Ok' })
+      .then(() => {
+        console.log('Email sent')
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+
+
+    // Send emails to the array list.
+    // emails.map((email) => {
+
+    //   (async function () {
+    //     await sgMail.send({
+    //       to: email,
+    //       from: 'iris@saharaflair.com',
+    //       subject: `There's a birthday today!`,
+    //       text: message
+    //     })
+    //       .then(() => {
+    //         console.log('Email sent')
+    //         res.status(200).json({ status: 'Ok' })
+    //       })
+    //       .catch((error) => {
+    //         console.error(error)
+    //       })
+    //   })()
+
+    // })
+    return res.status(200).json({ status: 'Ok' })
   } catch (err) {
     console.log("Error:", err)
   }
