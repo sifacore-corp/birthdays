@@ -30,8 +30,14 @@ export function updateBirthday(inputDate) {
 }
 
 export async function postToEmailAPI(emailParams) {
-  fetch('/api/email', {
+  const response = await fetch('/api/email', {
     method: 'POST',
     body: JSON.stringify(emailParams)
-  }).then(res => { alert("Emails successfully sent") })
+  })
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  let data = await response.text();
+  return data
 }

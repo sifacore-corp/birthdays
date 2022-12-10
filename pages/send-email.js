@@ -36,12 +36,16 @@ export default function SendEmail({ birthdaysToday, allBirthdays }) {
     console.log("birthday names: ", birthdayNames)
   }
 
+
+
   function triggerEmail(celebrants, emails) {
     let mailData = {
       emails: emails,
-      message: `Today is ${celebrants}'s birthday. Say happy birthday!`
+      message: `From localhost: Today is ${celebrants}'s birthday. Say happy birthday!`
     }
-    postToEmailAPI(mailData)
+    postToEmailAPI(mailData).then((data) => {
+      console.log("Email send status: ", data)
+    })
   }
 
   return (
