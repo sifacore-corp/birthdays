@@ -1,7 +1,7 @@
 name: Daily End-to-end tests
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/30 * * * *'
 jobs:
   cypress-run:
     # only runs this job on successful deploy
