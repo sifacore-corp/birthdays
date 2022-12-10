@@ -28,3 +28,10 @@ export function updateBirthday(inputDate) {
   }
 
 }
+
+export async function postToEmailAPI(emailParams) {
+  fetch('/api/email', {
+    method: 'POST',
+    body: JSON.stringify(emailParams)
+  }).then(res => { alert("Emails successfully sent") })
+}
