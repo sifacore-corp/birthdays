@@ -4,52 +4,9 @@ import { startOfToday, endOfToday } from 'date-fns'
 import { postToEmailAPI } from '../utils/dateUtils';
 
 import Layout from "../components/Layout"
+import SendClientEmail from '../components/emails/SendEmail';
 
-export default function SendEmail({ birthdaysToday, allBirthdays }) {
-
-  let birthdayNames;
-  let uniqueEmails;
-
-  if (birthdaysToday.length > 0) {
-    console.log("Birthday today!")
-
-    let birthdayIds = birthdaysToday.map((birthday) => birthday.id)
-    let birthdayPeople = birthdaysToday.map((person) => { return (`${person.first_name} ${person.last_name}`) })
-    // Convert to string and joind with commas or and for the last item.
-    birthdayNames = birthdayPeople.join(', ').replace(/, ([^,]*)$/, ' and $1')
-
-    // Get non-celebrants
-    let notBirthdaysToday = allBirthdays.filter((notBirthday) => {
-      return !birthdayIds.includes(notBirthday.id)
-    })
-
-    // Get their email ids from the referenced author list
-    let emails = notBirthdaysToday.map((notBirthday) => {
-      let { author } = notBirthday
-      return author.email;
-    })
-
-    // Remove duplicate emails addresses
-    let uniqueEmailsPointers = new Set(emails)
-    uniqueEmails = Array.from(uniqueEmailsPointers)
-
-    console.log("birthday names: ", birthdayNames)
-  }
-
-
-
-  function triggerEmail(celebrants, emails) {
-    emails.map((email) => {
-      let mailData = {
-        email: email,
-        message: `Today is ${celebrants}'s birthday. Say happy birthday!`
-      }
-      postToEmailAPI(mailData).then((data) => {
-        console.log("Email send status: ", data)
-      })
-    })
-
-  }
+export default function SendEmail({ allBirthdays }) {
 
   return (
     <>
@@ -59,11 +16,7 @@ export default function SendEmail({ birthdaysToday, allBirthdays }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <div>
-          {birthdaysToday.length > 0 ?
-            <button id="email-trigger" onClick={() => triggerEmail(birthdayNames, uniqueEmails)}>Send Emails </button> : `No birthdays today.`
-          }
-        </div>
+        <SendClientEmail allBirthdays={allBirthdays} />
       </Layout>
     </>
   )
@@ -71,21 +24,6 @@ export default function SendEmail({ birthdaysToday, allBirthdays }) {
 }
 
 export const getServerSideProps = async () => {
-  const birthdaysToday = await prisma.bio.findMany({
-    where: {
-      birthday: {
-        // Get a range of birthdays between the beginning and end of today
-        gte: startOfToday(),
-        lte: endOfToday()
-      }
-    },
-    include: {
-      author: {
-        select: { name: true, email: true },
-      },
-    }
-  })
-
   // All birthdays
   const allBirthdays = await prisma.bio.findMany({
     where: { published: true },
@@ -101,7 +39,6 @@ export const getServerSideProps = async () => {
 
   return {
     props: {
-      birthdaysToday,
       allBirthdays
     }
   }

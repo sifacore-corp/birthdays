@@ -8,7 +8,7 @@ export default async function handle(req, res) {
   const result = await prisma.bio.create({
     data: {
       title: title,
-      bio: bio,
+      text: bio,
       birthday: transformedBirthday,
       first_name: firstName,
       last_name: lastName,
